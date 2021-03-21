@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 
 namespace WeatherService.Entity
 {
@@ -6,6 +7,9 @@ namespace WeatherService.Entity
     {
         public string region { get; set; }
         public Forecast[] forecasts { get; set; }
+
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
         public bool IsNullOrEmpty
         {
             get
