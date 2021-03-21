@@ -28,7 +28,7 @@ namespace WeatherService
             IAsyncIO fileService = new FileManager(config);
             //IAsyncService webService = new ApiFetcher(config);
             IAsyncService webService = new MockApiFetcher();
-            
+
 
             var remoteFetchTask = webService.FetchAsync();
             var localFetchTask = fileService.FetchAsync();
@@ -42,12 +42,10 @@ namespace WeatherService
             var jsonHelper = new JsonHelper();
 
             var parseRemoteDataTask = remoteFetchTask.ContinueWith(
-                task => jsonHelper.FromJson<Region[]>(task.Result)
-                /*,TaskContinuationOptions.OnlyOnRanToCompletion*/);
+                task => jsonHelper.FromJson<Region[]>(task.Result));
 
             var parseLocalDataTask = localFetchTask.ContinueWith(
-                task => jsonHelper.FromJson<Region>(task.Result)
-                /*, TaskContinuationOptions.OnlyOnRanToCompletion*/);
+                task => jsonHelper.FromJson<Region>(task.Result));
 
             await Task.WhenAll(parseRemoteDataTask, parseLocalDataTask);
 
@@ -60,7 +58,8 @@ namespace WeatherService
             Region remoteInstance = new DataFilter(config).FilterRegions(remoteRegions);
 
             var dm = new DataMerger();
-            var newLocalInstance = dm.MergeRegions(localInstance, remoteInstance);
+            Region newLocalInstance = dm.MergeRegions(localInstance, remoteInstance);
+
             var newLocalJson = await jsonHelper.ToJson(newLocalInstance);
             await fileService.PersistAsync(newLocalJson);
         }
