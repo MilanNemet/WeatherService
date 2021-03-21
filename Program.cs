@@ -25,8 +25,10 @@ namespace WeatherService
             Console.WriteLine("Fetching data...");
 
 
-            IAsyncService webService = new ApiFetcher(config);
             IAsyncIO fileService = new FileManager(config);
+            //IAsyncService webService = new ApiFetcher(config);
+            IAsyncService webService = new MockApiFetcher();
+            
 
             var remoteFetchTask = webService.FetchAsync();
             var localFetchTask = fileService.FetchAsync();
