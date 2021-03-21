@@ -12,5 +12,19 @@
         public int water_temperature { get; set; }
         public string sunrise { get; set; }
         public string sunset { get; set; }
-    } 
+
+        public override bool Equals(object obj)
+        {
+            var forecast = obj as Forecast;
+            return Equals(forecast);
+        }
+        public bool Equals(Forecast fc)
+        {
+            return date.Date == fc.date.Date;
+        } 
+        public override int GetHashCode()
+        {
+            return date.GetHashCode();
+        }
+    }
 }

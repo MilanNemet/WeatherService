@@ -23,7 +23,25 @@ namespace WeatherService.Control
         {
             if (local.IsNullOrEmpty) return remote;
 
-            Region updated = new NullRegion();
+            Region updated;
+            Forecast[] newForecastArray;
+
+            try
+            {
+                var localCollection = local.forecasts.ToList();
+                var remoteCollection = remote.forecasts.ToList();
+                newForecastArray = localCollection.Union(remoteCollection).ToArray();
+
+                updated = new Region()
+                {
+                    region = remote.region,
+                    forecasts = newForecastArray
+                };
+            }
+            catch (Exception)
+            {
+                updated = new NullRegion(); /***  for now... ***/
+            }
 
             return updated;
         }
