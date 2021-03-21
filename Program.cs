@@ -2,6 +2,7 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 
 using WeatherService.Boundary;
@@ -19,7 +20,7 @@ namespace WeatherService
             var sw = new Stopwatch();
             sw.Start();
 
-            ILogger logger = new LiteLogger();
+            var logger = new LiteLogger(new MemoryStream());
             logger.Log(LogLevel.Info, "Building configuration...");
 
 
@@ -32,9 +33,9 @@ namespace WeatherService
             logger.Log(LogLevel.Info, "Fetching data...");
 
 
-            IAsyncIO fileService = new FileManager(config);
-            //IAsyncService webService = new ApiFetcher(config);
-            IAsyncService webService = new MockApiFetcher();
+            var fileService = new FileManager(config);
+            //var webService = new ApiFetcher(config);
+            var webService = new MockApiFetcher();
 
             var remoteFetchTask = webService.FetchAsync();
             var localFetchTask = fileService.FetchAsync();
@@ -91,10 +92,11 @@ namespace WeatherService
             var overall = sw.Elapsed.TotalSeconds;
             logger.Log(LogLevel.Info, $"Finished in {overall} second{(overall > 1 ? "s" : "")}");
             if (overall <= 1)
-                logger.Log(LogLevel.Warning, "This application is too fast, in addition to being so good!!!");
+                logger.Log(LogLevel.Warn, "This application is too fast, in addition to being so good!!!");
 
             Console.WriteLine("\nPress any key to continue...");
             Console.ReadKey();
+            logger.Dispose();
         }
     }
 }
