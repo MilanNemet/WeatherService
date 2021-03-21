@@ -21,7 +21,8 @@ namespace WeatherService.Boundary
         {
             var now = DateTime.UtcNow;
             var fm = FileMode.Create;
-            var path = $"./Logs/{now.Year}-{now.Month}-{now.Day}.log";
+            //var path = $"./Logs/{now.Year}-{now.Month}-{now.Day}.log";
+            var path = $"./Logs/{now:yyyy-MM-dd}.log";
             if (File.Exists(path)) fm = FileMode.Append;
             var fs = new FileStream(path, fm);
             outStream.Position = 0;
