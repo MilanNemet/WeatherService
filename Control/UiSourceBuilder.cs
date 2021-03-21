@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 using WeatherService.Boundary;
 using WeatherService.Entity;
@@ -19,18 +20,80 @@ namespace WeatherService.Control
 
         public void Build()
         {
-            //let dates;
-            //let maxValues;
-            //let progMaxValues;
-            //let minValues;
-            //let progMinValues;
-            var datesBuilder = new StringBuilder();
-            var maxValuesBuilder = new StringBuilder();
-            var progMaxValuesBuilder = new StringBuilder();
-            var minValuesBuilder = new StringBuilder();
-            var progMinValuesBuilder = new StringBuilder();
+            var sb = new StringBuilder();
+
+            var dates = BuildDates();
+            var maxValues = BuildMaxValues();
+            var progMaxValues = BuildProgMaxValues();
+            var minValues = BuildMinValues();
+            var progMinValues = BuildProgMinValues();
+
+            sb.Append(dates);
+            sb.Append(maxValues);
+            sb.Append(progMaxValues);
+            sb.Append(minValues);
+            sb.Append(progMinValues);
+
+            _fm.PersistResult(sb.ToString());
+        }
+
+        private string BuildDates()
+        {
+            var sb = new StringBuilder();
+            
+            sb.Append("let dates = [ ");
+            foreach (var fc in _local.forecasts)
+            {
+                sb.Append($"\"{fc.date:yyyy.MM.dd}\"");
+                sb.Append(", ");
+            }
+            sb.Remove(sb.Length - 2, 2);
+            sb.Append(" ];");
+            sb.Append(Environment.NewLine);
+
+            return sb.ToString();
+        }
+        private string BuildMaxValues()
+        {
+            var sb = new StringBuilder();
+
+            sb.Append("let maxValues = [");
 
 
+            return sb.ToString();
+        }
+        private string BuildProgMaxValues()
+        {
+            var sb = new StringBuilder();
+
+            sb.Append("let progMaxValues = [");
+            foreach (var fc in _local.forecasts)
+            {
+                sb.Append(fc.max_temp);
+                sb.Append(", ");
+            }
+            sb.Remove(sb.Length - 2, 2);
+            sb.Append(" ];");
+
+            return sb.ToString();
+        }
+        private string BuildMinValues()
+        {
+            var sb = new StringBuilder();
+
+            sb.Append("let minValues = [");
+
+
+            return sb.ToString();
+        }
+        private string BuildProgMinValues()
+        {
+            var sb = new StringBuilder();
+            
+            sb.Append("let progMinValues = [");
+
+
+            return sb.ToString();
         }
     }
 }
