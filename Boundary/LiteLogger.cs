@@ -1,18 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 using WeatherService.Interface;
 
-namespace WeatherService.Control
+namespace WeatherService.Boundary
 {
-    class LiteLogger : ILogger
+    class LiteLogger : ILogger, IDisposable
     {
-        public LiteLogger()
+        private Stream outStream;
+        public LiteLogger(Stream stream)
         {
+            outStream = stream;
+        }
 
+        public void Dispose()
+        {
+            var now = DateTime.UtcNow;
+            var fm = FileMode.Create;
+            var path = $"./Logs/{now.Year}-{now.Month}-{now.Day}.log";
+            if (File.Exists(path)) fm = FileMode.Append;
+            var fs = new FileStream(path, fm);
+            outStream.Position = 0;
+            outStream.CopyTo(fs);
+            fs.Flush(true);
         }
 
         public void Log(LogLevel level, params object[] objects)
@@ -27,7 +41,7 @@ namespace WeatherService.Control
                     PrintEach(level, objects);
                     Console.ForegroundColor = ConsoleColor.Gray;
                     break;
-                case LogLevel.Warning:
+                case LogLevel.Warn:
                     Console.ForegroundColor = ConsoleColor.DarkYellow;
                     PrintEach(level, objects);
                     Console.ForegroundColor = ConsoleColor.Gray;
@@ -45,11 +59,17 @@ namespace WeatherService.Control
 
         private void PrintEach(LogLevel level, object[] items)
         {
-            Console.Write(DateTime.UtcNow);
-            Console.Write("\t");
-            Console.Write(level);
-            foreach (var item in items) Console.Write($"\t{item}");
-            Console.WriteLine();
+            var sb = new StringBuilder();
+            sb.Append(DateTime.UtcNow);
+            sb.Append("\t");
+            sb.Append(level);
+            foreach (var item in items) sb.Append($"\t{item}");
+            sb.Append(Environment.NewLine);
+
+            Console.Write(sb);
+
+            var buffer = Encoding.Unicode.GetBytes(sb.ToString());
+            outStream.Write(buffer, 0, buffer.Length);
         }
     }
 }

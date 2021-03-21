@@ -15,7 +15,7 @@ namespace WeatherService.Interface
     {
         Info,
         Success,
-        Warning,
+        Warn,
         Error
     }
 }
