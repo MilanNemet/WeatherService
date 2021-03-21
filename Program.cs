@@ -87,12 +87,24 @@ namespace WeatherService
             var newLocalJson = await jsonHelper.ToJson(newLocalInstance);
             await fileService.PersistAsync(newLocalJson);
 
+
             logger.Log(LogLevel.Success, "Task completed!");
+            logger.Log(LogLevel.Info, "Building UI data source...");
+
+
+            var usb = new UiSourceBuilder(newLocalInstance, remoteInstance, fileService);
+            usb.Build();
+
+
+            logger.Log(LogLevel.Success, "Task completed!");
+
+
             sw.Stop();
             var overall = sw.Elapsed.TotalSeconds;
-            logger.Log(LogLevel.Info, $"Finished in {overall} second{(overall > 1 ? "s" : "")}");
+            logger.Log(LogLevel.Info, $"Finished in {overall} second{(overall != 1 ? "s" : "")}");
             if (overall <= 1)
                 logger.Log(LogLevel.Warn, "This application is too fast, in addition to being so good!!!");
+
 
             Console.WriteLine("\nPress any key to continue...");
             Console.ReadKey();
