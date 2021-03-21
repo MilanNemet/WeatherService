@@ -23,8 +23,9 @@ namespace WeatherService.Control
         {
             if (local.IsNullOrEmpty) return remote;
 
+            Region updated = new NullRegion();
 
-            return null;
+            return updated;
         }
     }
 }
