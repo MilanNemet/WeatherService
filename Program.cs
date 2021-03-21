@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 using WeatherService.Boundary;
@@ -12,9 +13,14 @@ namespace WeatherService
 {
     public class Program
     {
+        static object lockSource = new object();
         public static async Task Main()
         {
-            Console.WriteLine("Building configuration...");
+            var sw = new Stopwatch();
+            sw.Start();
+
+            ILogger logger = new LiteLogger();
+            logger.Log(LogLevel.Info, "Building configuration...");
 
 
             IConfigurationRoot config = new ConfigurationBuilder()
@@ -22,35 +28,47 @@ namespace WeatherService
                 .AddJsonFile("appsettings.json").Build();
 
 
-            Console.WriteLine("Fetching data...");
+            logger.Log(LogLevel.Success, "Task completed!");
+            logger.Log(LogLevel.Info, "Fetching data...");
 
 
             IAsyncIO fileService = new FileManager(config);
             //IAsyncService webService = new ApiFetcher(config);
             IAsyncService webService = new MockApiFetcher();
 
-
             var remoteFetchTask = webService.FetchAsync();
             var localFetchTask = fileService.FetchAsync();
 
-            var firstCompletedFetchTask = await Task.WhenAny(remoteFetchTask, localFetchTask);
-
-
-            if (firstCompletedFetchTask.IsCompleted) Console.WriteLine("Parsing JSON...");
-
-
             var jsonHelper = new JsonHelper();
 
-            var parseRemoteDataTask = remoteFetchTask.ContinueWith(
-                task => jsonHelper.FromJson<Region[]>(task.Result));
+            var parseRemoteDataTask = remoteFetchTask
+                .ContinueWith(task =>
+                {
+                    lock (lockSource)
+                    {
+                        logger.Log(LogLevel.Success, "RemoteFetchTask completed!");
+                        logger.Log(LogLevel.Info, "Parsing remote data..."); 
+                    }
+                    return jsonHelper.FromJson<Region[]>(task.Result);
+                });
 
-            var parseLocalDataTask = localFetchTask.ContinueWith(
-                task => jsonHelper.FromJson<Region>(task.Result));
+            var parseLocalDataTask = localFetchTask
+                .ContinueWith(task =>
+                {
+                    lock (lockSource)
+                    {
+                        logger.Log(LogLevel.Success, "LocalFetchTask completed!");
+                        logger.Log(LogLevel.Info, "Parsing local data..."); 
+                    }
+                    return jsonHelper.FromJson<Region>(task.Result);
+                });
 
             await Task.WhenAll(parseRemoteDataTask, parseLocalDataTask);
 
 
-            Console.WriteLine("Merging data...");
+            logger.Log(LogLevel.Success, "All parsing task completed!");
+            logger.Log(LogLevel.Info, "Merging data...");
+
 
             Region localInstance = parseLocalDataTask.Result.Result;
             Region[] remoteRegions = parseRemoteDataTask.Result.Result;
@@ -60,8 +78,23 @@ namespace WeatherService
             var dm = new DataMerger();
             Region newLocalInstance = dm.MergeRegions(localInstance, remoteInstance);
 
+
+            logger.Log(LogLevel.Success, "Task completed!");
+            logger.Log(LogLevel.Info, "Storing data...");
+
+
             var newLocalJson = await jsonHelper.ToJson(newLocalInstance);
             await fileService.PersistAsync(newLocalJson);
+
+            logger.Log(LogLevel.Success, "Task completed!");
+            sw.Stop();
+            var overall = sw.Elapsed.TotalSeconds;
+            logger.Log(LogLevel.Info, $"Finished in {overall} second{(overall > 1 ? "s" : "")}");
+            if (overall <= 1)
+                logger.Log(LogLevel.Warning, "This application is too fast, in addition to being so good!!!");
+
+            Console.WriteLine("\nPress any key to continue...");
+            Console.ReadKey();
         }
     }
 }
