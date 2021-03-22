@@ -1,0 +1,257 @@
+{
+  "region": "\u00C9szak-Dun\u00E1nt\u00FAl",
+  "forecasts": [
+    {
+      "date": "2021-03-20T00:00:00",
+      "sky_icon": {
+        "name": "Z\u00E1por",
+        "machine_name": "zapor",
+        "icon_day": "https://koponyeg.hu/images/zapor_nappal.svg",
+        "icon_night": "https://koponyeg.hu/images/zapor_ejjel.svg",
+        "description": "intenz\u00EDv, r\u00F6vid ideig tart\u00F3, foly\u00E9kony halmaz\u00E1llapt\u00FA csapad\u00E9k"
+      },
+      "max_temp": 6,
+      "min_temp": -4,
+      "rain": 1,
+      "rain_percent": 0,
+      "wind": 17,
+      "water_temperature": 0,
+      "sunrise": "05:50",
+      "sunset": "18:02"
+    },
+    {
+      "date": "2021-03-21T00:00:00",
+      "sky_icon": {
+        "name": "V\u00E1ltoz\u00F3an felh\u0151s",
+        "machine_name": "valtozoan_felhos",
+        "icon_day": "https://koponyeg.hu/images/valtozoan_felhos_nappal.svg",
+        "icon_night": "https://koponyeg.hu/images/valtozoan_felhos_ejjel.svg",
+        "description": "napos \u00E9s felh\u0151s id\u0151szakok v\u00E1ltj\u00E1k egym\u00E1st"
+      },
+      "max_temp": 6,
+      "min_temp": -5,
+      "rain": 0,
+      "rain_percent": 0,
+      "wind": 17,
+      "water_temperature": 0,
+      "sunrise": "05:50",
+      "sunset": "18:02"
+    },
+    {
+      "date": "2021-03-22T00:00:00",
+      "sky_icon": {
+        "name": "Szeles",
+        "machine_name": "szeles",
+        "icon_day": "https://koponyeg.hu/images/szeles_nappal.svg",
+        "icon_night": "https://koponyeg.hu/images/szeles_ejjel.svg",
+        "description": "\u00E9l\u00E9nk vagy er\u0151s l\u00E9gmozg\u00E1s"
+      },
+      "max_temp": 7,
+      "min_temp": 0,
+      "rain": 0,
+      "rain_percent": 0,
+      "wind": 32,
+      "water_temperature": 0,
+      "sunrise": "05:50",
+      "sunset": "18:02"
+    },
+    {
+      "date": "2021-03-23T00:00:00",
+      "sky_icon": {
+        "name": "Der\u00FClt",
+        "machine_name": "derult",
+        "icon_day": "https://koponyeg.hu/images/derult_nappal.svg",
+        "icon_night": "https://koponyeg.hu/images/derult_ejjel.svg",
+        "description": "nincs, vagy csak elhanyagolhat\u00F3 mennyis\u00E9g\u0171 felh\u0151 van"
+      },
+      "max_temp": 8,
+      "min_temp": -2,
+      "rain": 0,
+      "rain_percent": 0,
+      "wind": 19,
+      "water_temperature": 0,
+      "sunrise": "05:50",
+      "sunset": "18:02"
+    },
+    {
+      "date": "2021-03-24T00:00:00",
+      "sky_icon": {
+        "name": "V\u00E1ltoz\u00F3an felh\u0151s",
+        "machine_name": "valtozoan_felhos",
+        "icon_day": "https://koponyeg.hu/images/valtozoan_felhos_nappal.svg",
+        "icon_night": "https://koponyeg.hu/images/valtozoan_felhos_ejjel.svg",
+        "description": "napos \u00E9s felh\u0151s id\u0151szakok v\u00E1ltj\u00E1k egym\u00E1st"
+      },
+      "max_temp": 11,
+      "min_temp": -1,
+      "rain": 0,
+      "rain_percent": 0,
+      "wind": 19,
+      "water_temperature": 0,
+      "sunrise": "05:50",
+      "sunset": "18:02"
+    },
+    {
+      "date": "2021-03-25T00:00:00",
+      "sky_icon": {
+        "name": "V\u00E1ltoz\u00F3an felh\u0151s",
+        "machine_name": "valtozoan_felhos",
+        "icon_day": "https://koponyeg.hu/images/valtozoan_felhos_nappal.svg",
+        "icon_night": "https://koponyeg.hu/images/valtozoan_felhos_ejjel.svg",
+        "description": "napos \u00E9s felh\u0151s id\u0151szakok v\u00E1ltj\u00E1k egym\u00E1st"
+      },
+      "max_temp": 12,
+      "min_temp": 2,
+      "rain": 0,
+      "rain_percent": 0,
+      "wind": 15,
+      "water_temperature": 0,
+      "sunrise": "05:50",
+      "sunset": "18:02"
+    },
+    {
+      "date": "2021-03-26T00:00:00",
+      "sky_icon": {
+        "name": "V\u00E1ltoz\u00F3an felh\u0151s",
+        "machine_name": "valtozoan_felhos",
+        "icon_day": "https://koponyeg.hu/images/valtozoan_felhos_nappal.svg",
+        "icon_night": "https://koponyeg.hu/images/valtozoan_felhos_ejjel.svg",
+        "description": "napos \u00E9s felh\u0151s id\u0151szakok v\u00E1ltj\u00E1k egym\u00E1st"
+      },
+      "max_temp": 14,
+      "min_temp": 3,
+      "rain": 0,
+      "rain_percent": 0,
+      "wind": 14,
+      "water_temperature": 0,
+      "sunrise": "05:50",
+      "sunset": "18:02"
+    },
+    {
+      "date": "2021-03-27T00:00:00",
+      "sky_icon": {
+        "name": "V\u00E1ltoz\u00F3an felh\u0151s",
+        "machine_name": "valtozoan_felhos",
+        "icon_day": "https://koponyeg.hu/images/valtozoan_felhos_nappal.svg",
+        "icon_night": "https://koponyeg.hu/images/valtozoan_felhos_ejjel.svg",
+        "description": "napos \u00E9s felh\u0151s id\u0151szakok v\u00E1ltj\u00E1k egym\u00E1st"
+      },
+      "max_temp": 15,
+      "min_temp": 5,
+      "rain": 0,
+      "rain_percent": 0,
+      "wind": 17,
+      "water_temperature": 0,
+      "sunrise": "05:50",
+      "sunset": "18:02"
+    },
+    {
+      "date": "2021-03-28T00:00:00",
+      "sky_icon": {
+        "name": "V\u00E1ltoz\u00F3an felh\u0151s",
+        "machine_name": "valtozoan_felhos",
+        "icon_day": "https://koponyeg.hu/images/valtozoan_felhos_nappal.svg",
+        "icon_night": "https://koponyeg.hu/images/valtozoan_felhos_ejjel.svg",
+        "description": "napos \u00E9s felh\u0151s id\u0151szakok v\u00E1ltj\u00E1k egym\u00E1st"
+      },
+      "max_temp": 15,
+      "min_temp": 5,
+      "rain": 0,
+      "rain_percent": 0,
+      "wind": 12,
+      "water_temperature": 0,
+      "sunrise": "05:50",
+      "sunset": "18:02"
+    },
+    {
+      "date": "2021-03-29T00:00:00",
+      "sky_icon": {
+        "name": "V\u00E1ltoz\u00F3an felh\u0151s",
+        "machine_name": "valtozoan_felhos",
+        "icon_day": "https://koponyeg.hu/images/valtozoan_felhos_nappal.svg",
+        "icon_night": "https://koponyeg.hu/images/valtozoan_felhos_ejjel.svg",
+        "description": "napos \u00E9s felh\u0151s id\u0151szakok v\u00E1ltj\u00E1k egym\u00E1st"
+      },
+      "max_temp": 16,
+      "min_temp": 6,
+      "rain": 0,
+      "rain_percent": 0,
+      "wind": 12,
+      "water_temperature": 0,
+      "sunrise": "05:50",
+      "sunset": "18:02"
+    },
+    {
+      "date": "2021-03-30T00:00:00",
+      "sky_icon": {
+        "name": "Z\u00E1por",
+        "machine_name": "zapor",
+        "icon_day": "https://koponyeg.hu/images/zapor_nappal.svg",
+        "icon_night": "https://koponyeg.hu/images/zapor_ejjel.svg",
+        "description": "intenz\u00EDv, r\u00F6vid ideig tart\u00F3, foly\u00E9kony halmaz\u00E1llapt\u00FA csapad\u00E9k"
+      },
+      "max_temp": 15,
+      "min_temp": 6,
+      "rain": 1,
+      "rain_percent": 0,
+      "wind": 11,
+      "water_temperature": 0,
+      "sunrise": "05:50",
+      "sunset": "18:02"
+    },
+    {
+      "date": "2021-03-31T00:00:00",
+      "sky_icon": {
+        "name": "Z\u00E1por",
+        "machine_name": "zapor",
+        "icon_day": "https://koponyeg.hu/images/zapor_nappal.svg",
+        "icon_night": "https://koponyeg.hu/images/zapor_ejjel.svg",
+        "description": "intenz\u00EDv, r\u00F6vid ideig tart\u00F3, foly\u00E9kony halmaz\u00E1llapt\u00FA csapad\u00E9k"
+      },
+      "max_temp": 15,
+      "min_temp": 5,
+      "rain": 1,
+      "rain_percent": 0,
+      "wind": 15,
+      "water_temperature": 0,
+      "sunrise": "05:50",
+      "sunset": "18:02"
+    },
+    {
+      "date": "2021-04-01T00:00:00",
+      "sky_icon": {
+        "name": "V\u00E1ltoz\u00F3an felh\u0151s",
+        "machine_name": "valtozoan_felhos",
+        "icon_day": "https://koponyeg.hu/images/valtozoan_felhos_nappal.svg",
+        "icon_night": "https://koponyeg.hu/images/valtozoan_felhos_ejjel.svg",
+        "description": "napos \u00E9s felh\u0151s id\u0151szakok v\u00E1ltj\u00E1k egym\u00E1st"
+      },
+      "max_temp": 15,
+      "min_temp": 5,
+      "rain": 0,
+      "rain_percent": 0,
+      "wind": 16,
+      "water_temperature": 0,
+      "sunrise": "05:48",
+      "sunset": "18:04"
+    },
+    {
+      "date": "2021-04-02T00:00:00",
+      "sky_icon": {
+        "name": "Z\u00E1por",
+        "machine_name": "zapor",
+        "icon_day": "https://koponyeg.hu/images/zapor_nappal.svg",
+        "icon_night": "https://koponyeg.hu/images/zapor_ejjel.svg",
+        "description": "intenz\u00EDv, r\u00F6vid ideig tart\u00F3, foly\u00E9kony halmaz\u00E1llapt\u00FA csapad\u00E9k"
+      },
+      "max_temp": 15,
+      "min_temp": 5,
+      "rain": 2,
+      "rain_percent": 0,
+      "wind": 15,
+      "water_temperature": 0,
+      "sunrise": "05:46",
+      "sunset": "18:05"
+    }
+  ]
+}
