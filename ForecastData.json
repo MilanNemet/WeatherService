@@ -234,24 +234,6 @@
       "water_temperature": 0,
       "sunrise": "05:48",
       "sunset": "18:04"
-    },
-    {
-      "date": "2021-04-02T00:00:00",
-      "sky_icon": {
-        "name": "Z\u00E1por",
-        "machine_name": "zapor",
-        "icon_day": "https://koponyeg.hu/images/zapor_nappal.svg",
-        "icon_night": "https://koponyeg.hu/images/zapor_ejjel.svg",
-        "description": "intenz\u00EDv, r\u00F6vid ideig tart\u00F3, foly\u00E9kony halmaz\u00E1llapt\u00FA csapad\u00E9k"
-      },
-      "max_temp": 15,
-      "min_temp": 5,
-      "rain": 2,
-      "rain_percent": 0,
-      "wind": 15,
-      "water_temperature": 0,
-      "sunrise": "05:46",
-      "sunset": "18:05"
     }
   ]
 }
