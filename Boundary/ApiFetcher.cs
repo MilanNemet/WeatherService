@@ -24,7 +24,7 @@ namespace WeatherService.Boundary
             if (!int.TryParse(section.GetSection(nameof(Timeout)).Value, out Timeout)) Timeout = 60;
         }
 
-        public async Task<string> FetchAsync()
+        public async Task<string> FetchAsync(InOutOptions options = InOutOptions.None)
         {
             string response;
             using (var client = new HttpClient())
