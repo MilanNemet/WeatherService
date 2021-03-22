@@ -7,6 +7,6 @@ namespace WeatherService.Interface
 {
     interface IAsyncPersister
     {
-        Task PersistAsync(string data); 
+        Task PersistAsync(string data, InOutOptions options);
     }
 }

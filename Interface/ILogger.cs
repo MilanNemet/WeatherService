@@ -10,12 +10,4 @@ namespace WeatherService.Interface
     {
         public void Log(LogLevel level, params object[] obj);
     }
-
-    public enum LogLevel
-    {
-        Info,
-        Success,
-        Warn,
-        Error
-    }
 }
