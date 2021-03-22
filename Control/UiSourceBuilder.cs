@@ -3,22 +3,21 @@ using System.Text;
 
 using WeatherService.Boundary;
 using WeatherService.Entity;
+using WeatherService.Interface;
 
 namespace WeatherService.Control
 {
     class UiSourceBuilder
     {
         private readonly Region _local;
-        private readonly Region _remote;
-        private readonly FileManager _fm;
-        public UiSourceBuilder(Region local, Region remote, FileManager fm)
+        private readonly Forecast[] _todaysDatas;
+        public UiSourceBuilder(Region newLocal, Forecast[] todaysDatas)
         {
-            _local = local;
-            _remote = remote;
-            _fm = fm;
+            _local = newLocal;
+            _todaysDatas = todaysDatas;
         }
 
-        public void Build()
+        public string Build()
         {
             var sb = new StringBuilder();
 
@@ -34,7 +33,7 @@ namespace WeatherService.Control
             sb.Append(minValues);
             sb.Append(progMinValues);
 
-            _fm.PersistResult(sb.ToString());
+            return sb.ToString();
         }
 
         private string BuildDates()
