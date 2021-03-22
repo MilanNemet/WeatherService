@@ -34,11 +34,11 @@ namespace WeatherService
 
 
             var fileService = new FileManager(config);
-            //var webService = new ApiFetcher(config);
-            var webService = new MockApiFetcher();
+            var webService = new ApiFetcher(config);
+            //var webService = new MockApiFetcher();
 
             var remoteFetchTask = webService.FetchAsync();
-            var localFetchTask = fileService.FetchAsync();
+            var localFetchTask = fileService.FetchAsync(InOutOptions.ForecastPath);
 
             var jsonHelper = new JsonHelper();
 
@@ -85,7 +85,7 @@ namespace WeatherService
 
 
             var newLocalJson = await jsonHelper.ToJson(newLocalInstance);
-            await fileService.PersistAsync(newLocalJson);
+            await fileService.PersistAsync(newLocalJson, InOutOptions.ForecastPath);
 
 
             logger.Log(LogLevel.Success, "Task completed!");
