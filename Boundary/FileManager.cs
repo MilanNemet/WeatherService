@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 
 using WeatherService.Interface;
@@ -22,27 +23,24 @@ namespace WeatherService.Boundary
 
         public async Task<string> FetchAsync(InOutOptions options)
         {
-            string sourcePath =
-                GetType().GetProperty(options.ToString()).GetValue(this, null) as string;
+            string sourcePath = 
+                GetType()
+                .GetField(options.ToString(), BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(this) as string;
 
             string result = await File.ReadAllTextAsync(sourcePath);
 
-            //string result = await File.ReadAllTextAsync(ForecastPath);
             return result;
         }
 
         public async Task PersistAsync(string data, InOutOptions options)
         {
             string sourcePath =
-                GetType().GetProperty(options.ToString()).GetValue(this, null) as string;
+                GetType()
+                .GetField(options.ToString(), BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetValue(this) as string;
 
             await File.WriteAllTextAsync(sourcePath, data);
-            //await File.WriteAllTextAsync(ForecastPath, data);
         }
-
-        //public void PersistResult(string data)
-        //{
-        //    File.WriteAllText(ResultPath, data);
-        //}
     }
 }
