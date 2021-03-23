@@ -182,7 +182,7 @@ namespace WeatherService
                 });
 
 
-            await saveUiSourceTask;
+            await Task.WhenAll(saveUiSourceTask, forecastsStoreTask);
 
 
             sw.Stop();
