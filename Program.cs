@@ -29,13 +29,15 @@ namespace WeatherService
                 .AddJsonFile("appsettings.json").Build();
 
 
-            logger.Log(LogLevel.Success, "Task completed!");
+            logger.Log(LogLevel.Success, "Configuration build task completed!");
             logger.Log(LogLevel.Info, "Fetching data...");
+
 
             var jsonHelper = new JsonHelper();
             var fileService = new FileManager(config);
-            var webService = new ApiFetcher(config);
-            //var webService = new MockApiFetcher();
+            //var webService = new ApiFetcher(config);
+            var webService = new MockApiFetcher();
+
 
             var remoteFetchTask = webService.FetchAsync();
             var localFetchTask = fileService.FetchAsync(InOutOptions.ForecastPath);
@@ -150,7 +152,28 @@ namespace WeatherService
                     var tdb = new TodaysDataBuilder(remoteInstance, todaysForecasts);
                     return Task.Run(() => tdb.Build());
                 });
+            var todaysDataSerializationTask = todaysDataBuildTask
+                .ContinueWith(task =>
+                {
+                    lock (lockSource)
+                    {
+                        logger.Log(LogLevel.Success, "Today's weather data build task completed!");
+                        logger.Log(LogLevel.Info, "Serializing today's data...");
+                    }
 
+                    return jsonHelper.ToJson(task.Result.Result);
+                });
+            var todaysDataStoreTask = todaysDataSerializationTask
+                .ContinueWith(task =>
+                {
+                    lock (lockSource)
+                    {
+                        logger.Log(LogLevel.Success, "Today's weather data serialization task completed!");
+                        logger.Log(LogLevel.Info, "Storing today's data...");
+                    }
+
+                    return fileService.PersistAsync(task.Result.Result, InOutOptions.TodaysPath);
+                });
 
             var uiSourceBuildTask = Task.WhenAll(mergeTask, todaysDataBuildTask)
                 .ContinueWith(_ =>
