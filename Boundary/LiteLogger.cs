@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 using Microsoft.Extensions.Configuration;
 
@@ -20,6 +17,9 @@ namespace WeatherService.Boundary
         {
             _outStream = stream;
             _configuration = configuration;
+            var section = configuration.GetSection(nameof(ILogger));
+            _lowestLoglevel = 
+                (LogLevel)Enum.Parse(typeof(LogLevel), section.GetSection(nameof(LogLevel)).Value);
         }
 
         public void Log(LogLevel level, params object[] objects)
