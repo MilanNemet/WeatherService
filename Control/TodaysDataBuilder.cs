@@ -32,7 +32,11 @@ namespace WeatherService.Control
         }
         private void ReplaceMissingDaysByNull()
         {
-            if (result.Last().date.Date < DateTime.Now.Subtract(TimeSpan.FromDays(yesterday)).Date)
+            if
+            (
+                result.Count > 0 &&
+                result.Last().date.Date < DateTime.Now.Subtract(TimeSpan.FromDays(yesterday)).Date
+            )
             {
                 var diff = DateTime.Now.Date.Subtract(result.Last().date.Date);
 
@@ -47,7 +51,12 @@ namespace WeatherService.Control
             Forecast todaysWeather =
                 _remote.forecasts.ToList().Find(f => f.date.Date == DateTime.Now.Date);
 
-            if (result.Last() == null || !(result.Last().date.Date == DateTime.Now.Date))
+            if
+            (
+                result.Count <= 0 || 
+                result.Last() == null || 
+                result.Last().date.Date != DateTime.Now.Date
+            )
             {
                 result.Add(todaysWeather);
             }
