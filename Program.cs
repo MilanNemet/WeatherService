@@ -31,8 +31,8 @@ namespace WeatherService
 
             var jsonHelper = new JsonHelper();
             var fileService = new FileManager(config);
-            var webService = new ApiFetcher(config);
-            //var webService = new MockApiFetcher();
+            //var webService = new ApiFetcher(config);
+            var webService = new MockApiFetcher();
 
 
             var remoteFetchTask = webService.FetchAsync();
@@ -209,7 +209,7 @@ namespace WeatherService
             logger.Log(LogLevel.Success, "All task completed!");
             logger.Log(LogLevel.Info, $"Finished in {overall} second{(overall != 1 ? "s" : "")}");
             if (overall <= 1)
-                logger.Log(LogLevel.Warn, "This application is too fast, in addition to being so good!");
+                logger.Log(LogLevel.Warn, "This application is really fast :)");
 
 
             Console.WriteLine("\nPress any key to continue...");
