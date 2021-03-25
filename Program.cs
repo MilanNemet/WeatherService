@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 using WeatherService.Boundary;
@@ -15,6 +16,7 @@ namespace WeatherService
     public class Program
     {
         static object lockSource = new object();
+        static CancellationTokenSource tokenSource = new CancellationTokenSource();
         public static async Task Main()
         {
             var sw = new Stopwatch();
@@ -24,6 +26,7 @@ namespace WeatherService
                 .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                 .AddJsonFile("appsettings.json").Build();
 
+            var token = tokenSource.Token;
 
             var logger = new LiteLogger(new MemoryStream(), config);
             logger.Log(LogLevel.Debug, "Fetching data...");
@@ -31,8 +34,8 @@ namespace WeatherService
 
             var jsonHelper = new JsonHelper();
             var fileService = new FileManager(config);
-            //var webService = new ApiFetcher(config);
-            var webService = new MockApiFetcher();
+            var webService = new ApiFetcher(config);
+            //var webService = new MockApiFetcher();
 
 
             var remoteFetchTask = webService.FetchAsync();
@@ -48,7 +51,7 @@ namespace WeatherService
                         logger.Log(LogLevel.Success, "Remote fetch task completed!");
                         logger.Log(LogLevel.Info, "Parsing remote data...");
                     }
-                    return jsonHelper.FromJson<Region[]>(task.Result);
+                    return jsonHelper.FromJsonAsync<Region[]>(task.Result);
                 });
             var filterRemoteRegionsTask = parseRemoteDataTask
                 .ContinueWith(task =>
@@ -71,7 +74,7 @@ namespace WeatherService
                         logger.Log(LogLevel.Success, "Local fetch task completed!");
                         logger.Log(LogLevel.Info, "Parsing local data...");
                     }
-                    return jsonHelper.FromJson<Region>(task.Result);
+                    return jsonHelper.FromJsonAsync<Region>(task.Result);
                 });
 
             var parseTodaysDataTask = todaysFetchTask
@@ -82,7 +85,7 @@ namespace WeatherService
                         logger.Log(LogLevel.Success, "Today's fetch task completed!");
                         logger.Log(LogLevel.Info, "Parsing today's data...");
                     }
-                    return jsonHelper.FromJson<Forecast[]>(task.Result);
+                    return jsonHelper.FromJsonAsync<Forecast[]>(task.Result);
                 });
 
 
@@ -114,7 +117,7 @@ namespace WeatherService
                     }
 
                     Region newLocalInstance = task.Result.Result;
-                    return jsonHelper.ToJson(newLocalInstance);
+                    return jsonHelper.ToJsonAsync(newLocalInstance);
                 });
 
             var forecastsStoreTask = forecastsSerializationTask
@@ -157,7 +160,7 @@ namespace WeatherService
                         logger.Log(LogLevel.Info, "Serializing today's data...");
                     }
 
-                    return jsonHelper.ToJson(task.Result.Result);
+                    return jsonHelper.ToJsonAsync(task.Result.Result);
                 });
             var todaysDataStoreTask = todaysDataSerializationTask
                 .ContinueWith(task =>
@@ -214,7 +217,7 @@ namespace WeatherService
 
             Console.WriteLine("\nPress any key to continue...");
             Console.ReadKey();
-            logger.Dispose(); //// remove??
+            logger.Dispose();
         }
     }
 }

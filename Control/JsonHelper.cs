@@ -20,14 +20,14 @@ namespace WeatherService.Control
             };
         }
 
-        public async Task<T> FromJson<T>(string json)
+        public async Task<T> FromJsonAsync<T>(string json)
         {
             var result = await JsonSerializer.DeserializeAsync<T>(new MemoryStream(Encoding.UTF8.GetBytes(json)), _options);
 
             return result;
         }
 
-        public async Task<string> ToJson<T>(T value)
+        public async Task<string> ToJsonAsync<T>(T value)
         {
             using var stream = new MemoryStream();
             Task result = JsonSerializer.SerializeAsync(stream, value, _options);
