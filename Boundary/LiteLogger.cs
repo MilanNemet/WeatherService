@@ -5,35 +5,33 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Microsoft.Extensions.Configuration;
+
 using WeatherService.Interface;
 
 namespace WeatherService.Boundary
 {
     class LiteLogger : ILogger, IDisposable
     {
-        private Stream outStream;
-        public LiteLogger(Stream stream)
+        private readonly Stream _outStream;
+        private readonly IConfiguration _configuration;
+        private readonly LogLevel _lowestLoglevel;
+        public LiteLogger(Stream stream, IConfiguration configuration)
         {
-            outStream = stream;
-        }
-
-        public void Dispose()
-        {
-            var now = DateTime.UtcNow;
-            var fm = FileMode.Create;
-            //var path = $"./Logs/{now.Year}-{now.Month}-{now.Day}.log";
-            var path = $"./Logs/{now:yyyy-MM-dd}.log";
-            if (File.Exists(path)) fm = FileMode.Append;
-            var fs = new FileStream(path, fm);
-            outStream.Position = 0;
-            outStream.CopyTo(fs);
-            fs.Flush(true);
+            _outStream = stream;
+            _configuration = configuration;
         }
 
         public void Log(LogLevel level, params object[] objects)
         {
+            if (level < _lowestLoglevel) return;
             switch (level)
             {
+                case LogLevel.Debug:
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    PrintEach(level, objects);
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    break;
                 case LogLevel.Info:
                     PrintEach(level, objects);
                     break;
@@ -52,6 +50,11 @@ namespace WeatherService.Boundary
                     PrintEach(level, objects);
                     Console.ForegroundColor = ConsoleColor.Gray;
                     break;
+                case LogLevel.Fatal:
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    PrintEach(level, objects);
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    break;
                 default:
                     PrintEach(level, objects);
                     break;
@@ -61,7 +64,7 @@ namespace WeatherService.Boundary
         private void PrintEach(LogLevel level, object[] items)
         {
             var sb = new StringBuilder();
-            sb.Append(DateTime.UtcNow);
+            sb.Append(DateTime.Now);
             sb.Append("\t");
             sb.Append(level);
             foreach (var item in items) sb.Append($"\t{item}");
@@ -70,7 +73,19 @@ namespace WeatherService.Boundary
             Console.Write(sb);
 
             var buffer = Encoding.Unicode.GetBytes(sb.ToString());
-            outStream.Write(buffer, 0, buffer.Length);
+            _outStream.Write(buffer, 0, buffer.Length);
+        }
+
+        public void Dispose()
+        {
+            var now = DateTime.Now;
+            var fm = FileMode.Create;
+            var path = $"./Logs/{now:yyyy-MM-dd}.log";
+            if (File.Exists(path)) fm = FileMode.Append;
+            var fs = new FileStream(path, fm);
+            _outStream.Position = 0;
+            _outStream.CopyTo(fs);
+            fs.Flush(true);
         }
     }
 }

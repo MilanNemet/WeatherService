@@ -9,11 +9,11 @@ namespace WeatherService.Control
 {
     class UiSourceBuilder
     {
-        private readonly Region _local;
+        private readonly Region _newLocal;
         private readonly Forecast[] _todaysDatas;
         public UiSourceBuilder(Region newLocal, Forecast[] todaysDatas)
         {
-            _local = newLocal;
+            _newLocal = newLocal;
             _todaysDatas = todaysDatas;
         }
 
@@ -39,9 +39,9 @@ namespace WeatherService.Control
         private string BuildDates()
         {
             var sb = new StringBuilder();
-            
+
             sb.Append("let dates = [ ");
-            foreach (var fc in _local.forecasts)
+            foreach (var fc in _newLocal.forecasts)
             {
                 sb.Append($"\"{fc.date:yyyy.MM.dd}\"");
                 sb.Append(", ");
@@ -56,8 +56,16 @@ namespace WeatherService.Control
         {
             var sb = new StringBuilder();
 
-            sb.Append("let maxValues = [");
+            sb.Append("let maxValues = [ ");
 
+            foreach (var day in _todaysDatas)
+            {
+                sb.Append(day?.max_temp.ToString() ?? "null");
+                sb.Append(", ");
+            }
+            sb.Remove(sb.Length - 2, 2);
+            sb.Append(" ];");
+            sb.Append(Environment.NewLine);
 
             return sb.ToString();
         }
@@ -65,14 +73,15 @@ namespace WeatherService.Control
         {
             var sb = new StringBuilder();
 
-            sb.Append("let progMaxValues = [");
-            foreach (var fc in _local.forecasts)
+            sb.Append("let progMaxValues = [ ");
+            foreach (var fc in _newLocal.forecasts)
             {
                 sb.Append(fc.max_temp);
                 sb.Append(", ");
             }
             sb.Remove(sb.Length - 2, 2);
             sb.Append(" ];");
+            sb.Append(Environment.NewLine);
 
             return sb.ToString();
         }
@@ -80,17 +89,32 @@ namespace WeatherService.Control
         {
             var sb = new StringBuilder();
 
-            sb.Append("let minValues = [");
+            sb.Append("let minValues = [ ");
 
+            foreach (var day in _todaysDatas)
+            {
+                sb.Append(day?.min_temp.ToString() ?? "null");
+                sb.Append(", ");
+            }
+            sb.Remove(sb.Length - 2, 2);
+            sb.Append(" ];");
+            sb.Append(Environment.NewLine);
 
             return sb.ToString();
         }
         private string BuildProgMinValues()
         {
             var sb = new StringBuilder();
-            
-            sb.Append("let progMinValues = [");
 
+            sb.Append("let progMinValues = [ ");
+            foreach (var fc in _newLocal.forecasts)
+            {
+                sb.Append(fc.min_temp);
+                sb.Append(", ");
+            }
+            sb.Remove(sb.Length - 2, 2);
+            sb.Append(" ];");
+            sb.Append(Environment.NewLine);
 
             return sb.ToString();
         }

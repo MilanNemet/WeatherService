@@ -12,8 +12,10 @@ namespace WeatherService.Control
 {
     class TodaysDataBuilder
     {
+        private const double yesterday = 1;
         private readonly Region _remote;
         private readonly Forecast[] _todaysWeathers;
+        private List<Forecast> result { get; set; }
 
         public TodaysDataBuilder(Region remote, Forecast[] todaysWeathers)
         {
@@ -23,11 +25,32 @@ namespace WeatherService.Control
 
         public Forecast[] Build()
         {
-            var todaysWeather = _remote.forecasts.ToList().Find(f => f.date.Date == DateTime.Now.Date);
-            var updated = _todaysWeathers.ToList();
-            updated.Add(todaysWeather);
+            result = _todaysWeathers.ToList();
+            ReplaceMissingDaysByNull();
+            AppendTodaysWeather();
+            return result.ToArray();
+        }
+        private void ReplaceMissingDaysByNull()
+        {
+            if (result.Last().date.Date < DateTime.Now.Subtract(TimeSpan.FromDays(yesterday)).Date)
+            {
+                var diff = DateTime.Now.Date.Subtract(result.Last().date.Date);
 
-            return updated.ToArray();
+                for (int i = 0; i < diff.Days - yesterday; i++)
+                {
+                    result.Add(null);
+                }
+            }
+        }
+        private void AppendTodaysWeather()
+        {
+            Forecast todaysWeather =
+                _remote.forecasts.ToList().Find(f => f.date.Date == DateTime.Now.Date);
+
+            if (result.Last() == null || !(result.Last().date.Date == DateTime.Now.Date))
+            {
+                result.Add(todaysWeather);
+            }
         }
     }
 }

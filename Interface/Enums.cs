@@ -8,10 +8,12 @@ namespace WeatherService.Interface
 {
     public enum LogLevel
     {
+        Debug,
         Info,
         Success,
         Warn,
-        Error
+        Error,
+        Fatal
     }
     public enum InOutOptions
     {
