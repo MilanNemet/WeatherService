@@ -20,23 +20,19 @@ namespace WeatherService
             var sw = new Stopwatch();
             sw.Start();
 
-            var logger = new LiteLogger(new MemoryStream());
-            logger.Log(LogLevel.Info, "Building configuration...");
-
-
             IConfigurationRoot config = new ConfigurationBuilder()
                 .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                 .AddJsonFile("appsettings.json").Build();
 
 
-            logger.Log(LogLevel.Success, "Configuration build task completed!");
-            logger.Log(LogLevel.Info, "Fetching data...");
+            var logger = new LiteLogger(new MemoryStream(), config);
+            logger.Log(LogLevel.Debug, "Fetching data...");
 
 
             var jsonHelper = new JsonHelper();
             var fileService = new FileManager(config);
-            //var webService = new ApiFetcher(config);
-            var webService = new MockApiFetcher();
+            var webService = new ApiFetcher(config);
+            //var webService = new MockApiFetcher();
 
 
             var remoteFetchTask = webService.FetchAsync();
@@ -147,9 +143,9 @@ namespace WeatherService
                     }
 
                     Region remoteInstance = filterRemoteRegionsTask.Result.Result;
-                    Forecast[] todaysForecasts = parseTodaysDataTask.Result.Result;
+                    Forecast[] todaysWeathers = parseTodaysDataTask.Result.Result;
 
-                    var tdb = new TodaysDataBuilder(remoteInstance, todaysForecasts);
+                    var tdb = new TodaysDataBuilder(remoteInstance, todaysWeathers);
                     return Task.Run(() => tdb.Build());
                 });
             var todaysDataSerializationTask = todaysDataBuildTask
