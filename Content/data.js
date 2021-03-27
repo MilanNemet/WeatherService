@@ -1,22 +1,5 @@
-let i = 0;
-
-let dates;
-
-let maxValues;
-let progMaxValues;
-
-let minValues;
-let progMinValues;
-
-dates = Array.from({ length: 10 }, () => 'Date-' + (++i));
-
-maxValues = Array.from({ length: 10 }, () => Math.floor(Math.random() * 30 + 10));
-progMaxValues = maxValues.map(x => x - 3 + Math.random() * 6);
-
-minValues = Array.from({ length: 10 }, () => Math.floor(Math.random() * -30 + 5));
-progMinValues = minValues.map(x => x + 3 - Math.random() * 6);
-
-for (let i = 0; i < 2; i++) {
-    progMaxValues[i] = null;
-    progMinValues[i] = null;
-}
+let dates = ["2021.03.25", "2021.03.26", "2021.03.27", "2021.03.28", "2021.03.29", "2021.03.30", "2021.03.31", "2021.04.01", "2021.04.02", "2021.04.03", "2021.04.04", "2021.04.05", "2021.04.06", "2021.04.07"];
+let maxValues = [11, 16, 17];
+let progMaxValues = [11, 15, 15, 13, 18, 20, 20, 18, 15, 13, 13, 14, 15, 14];
+let minValues = [0, 1, 5];
+let progMinValues = [0, 1, 5, 4, 4, 7, 7, 8, 6, 5, 5, 4, 6, 3];
