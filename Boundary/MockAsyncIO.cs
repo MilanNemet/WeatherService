@@ -21,6 +21,10 @@ namespace WeatherService.Boundary
             rand += new Random().Next(0, 999);
             Duration = rand;
         }
+        public MockAsyncIO(int option) : this()
+        {
+            ThrowBehavior = (ThrowOption)option;
+        }
         public async Task<string> FetchAsync(InOutOptions options = InOutOptions.None)
         {
             if (ThrowBehavior.HasFlag(ThrowOption.ThrowOnFetch))
