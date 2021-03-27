@@ -15,6 +15,7 @@ namespace WeatherService
 {
     public class Program
     {
+        static bool debug = true;
         static readonly object s_lockSource = new object();
         static readonly CancellationTokenSource s_tokenSource = new CancellationTokenSource();
         static readonly CancellationToken s_token = s_tokenSource.Token;
@@ -31,12 +32,10 @@ namespace WeatherService
             logger.Log(LogLevel.Debug, "Fetching data...");
 
             var jsonHelper = new JsonHelper();
-            var fileService = new FileService(config, s_token);
-            var webService = new WebService(config);
-            //var fileService = new MockAsyncIO();
-            //var webService = new MockAsyncIO();
+            IAsyncIO fileService = debug ? new MockAsyncIO() : new FileService(config, s_token);
+            IAsyncService webService = debug ? new MockAsyncIO() : new WebService(config, s_token);
 
-            var remoteFetchTask = webService.FetchAsync();
+            var remoteFetchTask = webService.FetchAsync(InOutOptions.None);
             var localFetchTask = fileService.FetchAsync(InOutOptions.ForecastPath);
             var todaysFetchTask = fileService.FetchAsync(InOutOptions.TodaysPath);
 
@@ -224,10 +223,10 @@ namespace WeatherService
                 if (overall <= 1)
                     logger.Log(LogLevel.Warn, "This application is too fast :)");
             }
-            catch(AggregateException ae)
+            catch (AggregateException ae)
             {
                 foreach (var e in ae.Flatten().InnerExceptions)
-                    logger.Log(LogLevel.Error, 
+                    logger.Log(LogLevel.Error,
                         $"Exception has been thrown at: {e.StackTrace}" +
                         $"{Environment.NewLine}\t\t{e.Message}");
             }
