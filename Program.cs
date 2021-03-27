@@ -15,7 +15,7 @@ namespace WeatherService
 {
     public class Program
     {
-        static bool debug = true;
+        static readonly bool mock = true;
         static readonly object s_lockSource = new object();
         static readonly CancellationTokenSource s_tokenSource = new CancellationTokenSource();
         static readonly CancellationToken s_token = s_tokenSource.Token;
@@ -32,8 +32,8 @@ namespace WeatherService
             logger.Log(LogLevel.Debug, "Fetching data...");
 
             var jsonHelper = new JsonHelper();
-            IAsyncIO fileService = debug ? new MockAsyncIO() : new FileService(config, s_token);
-            IAsyncService webService = debug ? new MockAsyncIO() : new WebService(config, s_token);
+            IAsyncIO fileService = mock ? new MockAsyncIO() : new FileService(config, s_token);
+            IAsyncService webService = mock ? new MockAsyncIO() : new WebService(config, s_token);
 
             var remoteFetchTask = webService.FetchAsync(InOutOptions.None);
             var localFetchTask = fileService.FetchAsync(InOutOptions.ForecastPath);
