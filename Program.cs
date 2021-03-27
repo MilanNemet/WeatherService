@@ -203,18 +203,18 @@ namespace WeatherService
             try
             {
                 Task.WaitAll(new Task[]
-                    {
-                localFetchTask,
-                remoteFetchTask,
-                todaysFetchTask,
-                parseLocalDataTask,
-                parseRemoteDataTask,
-                parseTodaysDataTask,
-                mergeTask,
-                forecastsStoreTask,
-                todaysDataStoreTask,
-                uiDataStoreTask
-                    });
+                {
+                    localFetchTask,
+                    remoteFetchTask,
+                    todaysFetchTask,
+                    parseLocalDataTask,
+                    parseRemoteDataTask,
+                    parseTodaysDataTask,
+                    mergeTask,
+                    forecastsStoreTask,
+                    todaysDataStoreTask,
+                    uiDataStoreTask
+                });
 
                 sw.Stop();
                 var overall = sw.Elapsed.TotalSeconds;
