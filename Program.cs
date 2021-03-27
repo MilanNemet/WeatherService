@@ -31,9 +31,10 @@ namespace WeatherService
             logger.Log(LogLevel.Debug, "Fetching data...");
 
             var jsonHelper = new JsonHelper();
-            var fileService = new FileManager(config);
-            var webService = new ApiFetcher(config);
-            //var webService = new MockApiFetcher();
+            var fileService = new FileService(config, s_token);
+            var webService = new WebService(config);
+            //var fileService = new MockAsyncIO();
+            //var webService = new MockAsyncIO();
 
             var remoteFetchTask = webService.FetchAsync();
             var localFetchTask = fileService.FetchAsync(InOutOptions.ForecastPath);
@@ -170,7 +171,7 @@ namespace WeatherService
                     return fileService.PersistAsync(task.Result.Result, InOutOptions.TodaysPath);
                 }, TaskContinuationOptions.OnlyOnRanToCompletion);
 
-            var uiSourceBuildTask = Task.WhenAll(mergeTask, todaysDataBuildTask)
+            var uiDataBuildTask = Task.WhenAll(mergeTask, todaysDataBuildTask)
                 .ContinueWith(_ =>
                 {
                     lock (s_lockSource)
@@ -187,7 +188,7 @@ namespace WeatherService
                 }, TaskContinuationOptions.OnlyOnRanToCompletion);
 
 
-            var saveUiSourceTask = uiSourceBuildTask
+            var uiDataStoreTask = uiDataBuildTask
                 .ContinueWith(task =>
                 {
                     lock (s_lockSource)
@@ -200,16 +201,40 @@ namespace WeatherService
                 }, TaskContinuationOptions.OnlyOnRanToCompletion);
 
 
-            await Task.WhenAll(saveUiSourceTask, forecastsStoreTask);
+            try
+            {
+                Task.WaitAll(new Task[]
+                    {
+                localFetchTask,
+                remoteFetchTask,
+                todaysFetchTask,
+                parseLocalDataTask,
+                parseRemoteDataTask,
+                parseTodaysDataTask,
+                mergeTask,
+                forecastsStoreTask,
+                todaysDataStoreTask,
+                uiDataStoreTask
+                    });
 
-
-            sw.Stop();
-            var overall = sw.Elapsed.TotalSeconds;
-            logger.Log(LogLevel.Success, "All task completed!");
-            logger.Log(LogLevel.Info, $"Finished in {overall} second{(overall != 1 ? "s" : "")}");
-            if (overall <= 1)
-                logger.Log(LogLevel.Warn, "This application is really fast :)");
-
+                sw.Stop();
+                var overall = sw.Elapsed.TotalSeconds;
+                logger.Log(LogLevel.Success, "All task completed!");
+                logger.Log(LogLevel.Info, $"Finished in {overall} second{(overall != 1 ? "s" : "")}");
+                if (overall <= 1)
+                    logger.Log(LogLevel.Warn, "This application is too fast :)");
+            }
+            catch(AggregateException ae)
+            {
+                foreach (var e in ae.Flatten().InnerExceptions)
+                    logger.Log(LogLevel.Error, 
+                        $"Exception has been thrown at: {e.StackTrace}" +
+                        $"{Environment.NewLine}\t\t{e.Message}");
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogLevel.Fatal, ex.ToString());
+            }
 
             Console.WriteLine("\nPress any key to continue...");
             Console.ReadKey();
