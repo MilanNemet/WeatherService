@@ -36,8 +36,8 @@ namespace WeatherService
             IAsyncService webService = mock ? new MockAsyncIO() : new WebService(config, s_token);
 
             var remoteFetchTask = webService.FetchAsync(InOutOptions.None);
-            var localFetchTask = fileService.FetchAsync(InOutOptions.ForecastPath);
-            var todaysFetchTask = fileService.FetchAsync(InOutOptions.TodaysPath);
+            var localForecastFetchTask = fileService.FetchAsync(InOutOptions.ForecastPath);
+            var localTodaysFetchTask = fileService.FetchAsync(InOutOptions.TodaysPath);
 
             var parseRemoteDataTask = remoteFetchTask
                 .ContinueWith(task =>
@@ -54,48 +54,48 @@ namespace WeatherService
                 {
                     lock (s_lockSource)
                     {
-                        logger.Log(LogLevel.Success, "Forecasts parsing task completed!");
-                        logger.Log(LogLevel.Info, "Merging data...");
+                        logger.Log(LogLevel.Success, "Remote data parsing task completed!");
+                        logger.Log(LogLevel.Info, "Filtering data...");
                     }
 
                     Region[] remoteRegions = parseRemoteDataTask.Result.Result;
                     return Task.Run(() => new DataFilter(config).FilterRegions(remoteRegions));
                 }, TaskContinuationOptions.OnlyOnRanToCompletion);
 
-            var parseLocalDataTask = localFetchTask
+            var parseLocalForecastDataTask = localForecastFetchTask
                 .ContinueWith(task =>
                 {
                     lock (s_lockSource)
                     {
-                        logger.Log(LogLevel.Success, "Local fetch task completed!");
-                        logger.Log(LogLevel.Info, "Parsing local data...");
+                        logger.Log(LogLevel.Success, "Local forecast fetch task completed!");
+                        logger.Log(LogLevel.Info, "Parsing local forecast data...");
                     }
                     return jsonHelper.FromJsonAsync<Region>(task.Result);
                 }, TaskContinuationOptions.OnlyOnRanToCompletion);
 
-            var parseTodaysDataTask = todaysFetchTask
+            var parseLocalTodaysDataTask = localTodaysFetchTask
                 .ContinueWith(task =>
                 {
                     lock (s_lockSource)
                     {
-                        logger.Log(LogLevel.Success, "Today's fetch task completed!");
-                        logger.Log(LogLevel.Info, "Parsing today's data...");
+                        logger.Log(LogLevel.Success, "Local today's fetch task completed!");
+                        logger.Log(LogLevel.Info, "Parsing local today's data...");
                     }
                     return jsonHelper.FromJsonAsync<Forecast[]>(task.Result);
                 }, TaskContinuationOptions.OnlyOnRanToCompletion);
 
 
             var mergeTask =
-                Task.WhenAll(filterRemoteRegionsTask, parseLocalDataTask)
+                Task.WhenAll(filterRemoteRegionsTask, parseLocalForecastDataTask)
                 .ContinueWith(_ =>
                 {
                     lock (s_lockSource)
                     {
-                        logger.Log(LogLevel.Success, "Forecasts parsing task completed!");
+                        logger.Log(LogLevel.Success, "Forecasts parsing and filtering tasks completed!");
                         logger.Log(LogLevel.Info, "Merging data...");
                     }
 
-                    Region localInstance = parseLocalDataTask.Result.Result;
+                    Region localInstance = parseLocalForecastDataTask.Result.Result;
                     Region remoteInstance = filterRemoteRegionsTask.Result.Result;
 
                     var dm = new DataMerger();
@@ -132,17 +132,17 @@ namespace WeatherService
 
 
             var todaysDataBuildTask =
-                Task.WhenAll(parseTodaysDataTask, filterRemoteRegionsTask)
+                Task.WhenAll(parseLocalTodaysDataTask, filterRemoteRegionsTask)
                 .ContinueWith(_ =>
                 {
                     lock (s_lockSource)
                     {
-                        logger.Log(LogLevel.Success, "Today's weather parsing task completed!");
+                        logger.Log(LogLevel.Success, "Today's weather parsing and filtering tasks completed!");
                         logger.Log(LogLevel.Info, "Building today's data...");
                     }
 
                     Region remoteInstance = filterRemoteRegionsTask.Result.Result;
-                    Forecast[] todaysWeathers = parseTodaysDataTask.Result.Result;
+                    Forecast[] todaysWeathers = parseLocalTodaysDataTask.Result.Result;
 
                     var tdb = new TodaysDataBuilder(remoteInstance, todaysWeathers);
                     return Task.Run(() => tdb.Build());
@@ -204,12 +204,12 @@ namespace WeatherService
             {
                 Task.WaitAll(new Task[]
                 {
-                    localFetchTask,
+                    localForecastFetchTask,
                     remoteFetchTask,
-                    todaysFetchTask,
-                    parseLocalDataTask,
+                    localTodaysFetchTask,
+                    parseLocalForecastDataTask,
                     parseRemoteDataTask,
-                    parseTodaysDataTask,
+                    parseLocalTodaysDataTask,
                     mergeTask,
                     forecastsStoreTask,
                     todaysDataStoreTask,
