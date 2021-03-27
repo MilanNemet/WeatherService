@@ -8,14 +8,14 @@ using WeatherService.Interface;
 
 namespace WeatherService.Boundary
 {
-    class ApiFetcher : IAsyncService
+    class WebService : IAsyncService
     {
         private readonly string AuthHeaderKey;
         private readonly string AuthHeaderValue;
         private readonly string ApiUrl;
         private readonly int Timeout;
 
-        public ApiFetcher(IConfigurationRoot configuration)
+        public WebService(IConfigurationRoot configuration)
         {
             var section = configuration.GetSection(GetType().Name);
             AuthHeaderKey = section.GetSection(nameof(AuthHeaderKey)).Value;

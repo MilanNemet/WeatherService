@@ -8,12 +8,12 @@ using WeatherService.Interface;
 
 namespace WeatherService.Boundary
 {
-    class FileManager : IAsyncIO
+    class FileService : IAsyncIO
     {
         private readonly string ForecastPath;
         private readonly string TodaysPath;
         private readonly string ResultPath;
-        public FileManager(IConfigurationRoot configuration)
+        public FileService(IConfigurationRoot configuration)
         {
             var section = configuration.GetSection(GetType().Name);
             ForecastPath = section.GetSection(nameof(ForecastPath)).Value;
