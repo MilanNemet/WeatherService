@@ -15,11 +15,11 @@ namespace WeatherService
 {
     public class Program
     {
-        static readonly bool mock = true;
+        static readonly bool mock = false;
         static readonly object s_lockSource = new object();
         static readonly CancellationTokenSource s_tokenSource = new CancellationTokenSource();
         static readonly CancellationToken s_token = s_tokenSource.Token;
-        public static async Task Main()
+        public static void Main()
         {
             var sw = new Stopwatch();
             sw.Start();
@@ -227,8 +227,10 @@ namespace WeatherService
             {
                 foreach (var e in ae.Flatten().InnerExceptions)
                     logger.Log(LogLevel.Error,
-                        $"Exception has been thrown at: {e.StackTrace}" +
-                        $"{Environment.NewLine}\t\t{e.Message}");
+                        $"Exception has been thrown at:{e.Source}::{e.TargetSite}" +
+                        $"{Environment.NewLine}\t\t{e.Message}" +
+                        $"{Environment.NewLine}\t\tInnerException if any: {e.InnerException?.Message ?? "-"}" +
+                        $"{Environment.NewLine}\t\t{e.StackTrace}");
             }
             catch (Exception ex)
             {
