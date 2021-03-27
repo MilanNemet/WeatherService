@@ -25,6 +25,11 @@ namespace WeatherService.Boundary
         {
             ThrowBehavior = (ThrowOption)option;
         }
+        public MockAsyncIO(int option, int duration)
+        {
+            ThrowBehavior = (ThrowOption)option;
+            Duration = duration;
+        }
         public async Task<string> FetchAsync(InOutOptions options = InOutOptions.None)
         {
             if (ThrowBehavior.HasFlag(ThrowOption.ThrowOnFetch))
@@ -46,7 +51,7 @@ namespace WeatherService.Boundary
         }
 
         [Flags]
-        enum ThrowOption
+        private enum ThrowOption
         {
             None,
             ThrowOnFetch,
