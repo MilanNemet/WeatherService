@@ -6,14 +6,12 @@ var maxChart = new Chart(ctxMax, {
         datasets: [{
             label: 'Napi maximumok',
             data: maxValues,
-            // backgroundColor: ['white'],
             borderColor: ['red'],
             borderWidth: 1
         },
         {
             label: 'Prognosztizált maximumok',
             data: progMaxValues,
-            // backgroundColor: ['white'],
             borderColor: ['orange'],
             borderWidth: 1
         }]
@@ -37,14 +35,12 @@ var minChart = new Chart(ctxMin, {
         datasets: [{
             label: 'Napi minimumok',
             data: minValues,
-            // backgroundColor: ['white'],
             borderColor: ['blue'],
             borderWidth: 1
         },
         {
             label: 'Prognosztizált minimumok',
             data: progMinValues,
-            // backgroundColor: ['white'],
             borderColor: ['cyan'],
             borderWidth: 1
         }]
