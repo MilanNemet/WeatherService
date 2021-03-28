@@ -19,7 +19,7 @@ namespace WeatherService
         static readonly object s_lockSource = new object();
         static readonly CancellationTokenSource s_tokenSource = new CancellationTokenSource();
         static readonly CancellationToken s_token = s_tokenSource.Token;
-        public static void Main()
+        public static async Task Main()
         {
             var sw = new Stopwatch();
             sw.Start();
@@ -29,11 +29,75 @@ namespace WeatherService
                 .AddJsonFile("appsettings.json").Build();
 
             var logger = new LiteLogger(new MemoryStream(), config);
-            logger.Log(LogLevel.Debug, "Fetching data...");
+
+            logger.Log(LogLevel.Debug, "Entering main loop...");
+            await MainLoop(logger, config);
+
+            sw.Stop();
+            var overall = sw.Elapsed.TotalSeconds;
+            logger.Log(LogLevel.Info, $"Finished in {overall} second{(overall != 1 ? "s" : "")}");
+            if (overall <= 1)
+                logger.Log(LogLevel.Warn, "This application is too fast :)");
+
+            Console.WriteLine("\nPress any key to continue...");
+            Console.ReadKey();
+            logger.Dispose();
+        }
+        private static async Task MainLoop(ILogger logger, IConfigurationRoot config)
+        {
+
+            var section = config
+                .GetSection(new StackTrace()
+                .GetFrame(3)
+                .GetMethod()
+                .Name);
+
+            double Delay = double
+                .TryParse(section
+                .GetSection(nameof(Delay))
+                .Value, out Delay) ? Delay : 5;
+
+            uint MaxTries = uint
+                .TryParse(section
+                .GetSection(nameof(MaxTries))
+                .Value, out MaxTries) ? MaxTries : 3;
+
+            uint counter = 0;
+            bool success;
+            do
+            {
+                ++counter;
+                logger.Log(LogLevel.Debug, "Starting main task...");
+                success = MainTask(logger, config);
+                if (!success)
+                {
+                    Console.WriteLine();
+                    var delayTask = Task.Delay(TimeSpan.FromSeconds(Delay));
+                    var ww = Console.WindowWidth;
+                    while (!delayTask.IsCompleted)
+                    {
+                        for (int i = 0; i < ww; i++)
+                        {
+                            ww = Console.WindowWidth;
+                            Console.Write('█');
+                            await Task.Delay((int)Math.Round(Delay*1000/ww));
+                        }
+                    }
+                    Console.WriteLine();
+                }
+            }
+            while (!success && counter < MaxTries);
+        }
+        private static bool MainTask(ILogger logger, IConfigurationRoot config)
+        {
+            var result = false;
 
             var jsonHelper = new JsonHelper();
             IAsyncIO fileService = mock ? new MockAsyncIO() : new FileService(config, s_token);
             IAsyncService webService = mock ? new MockAsyncIO() : new WebService(config, s_token);
+
+            logger.Log(LogLevel.Debug, "Initializing subtasks...");
+            logger.Log(LogLevel.Debug, "Fetching data...");
 
             var remoteFetchTask = webService.FetchAsync(InOutOptions.None);
             var localForecastFetchTask = fileService.FetchAsync(InOutOptions.ForecastPath);
@@ -216,12 +280,8 @@ namespace WeatherService
                     uiDataStoreTask
                 });
 
-                sw.Stop();
-                var overall = sw.Elapsed.TotalSeconds;
+                result = true;
                 logger.Log(LogLevel.Success, "All task completed!");
-                logger.Log(LogLevel.Info, $"Finished in {overall} second{(overall != 1 ? "s" : "")}");
-                if (overall <= 1)
-                    logger.Log(LogLevel.Warn, "This application is too fast :)");
             }
             catch (AggregateException ae)
             {
@@ -236,10 +296,7 @@ namespace WeatherService
             {
                 logger.Log(LogLevel.Fatal, ex.ToString());
             }
-
-            Console.WriteLine("\nPress any key to continue...");
-            Console.ReadKey();
-            logger.Dispose();
+            return result;
         }
     }
 }
