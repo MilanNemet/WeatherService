@@ -11,26 +11,42 @@
             flex-wrap: wrap;
             justify-content: space-evenly;
             align-items: center;
+            padding-bottom: 5vh;
+            margin-bottom: 5vh;
         }
+
         .chart-container {
-            max-width: 600px;
-            max-height: 600px;
+            position: relative;
+            overflow: hidden;
+            resize: both;
             min-width: 400px;
-            min-height: 400px;
+            min-height: 320px;
         }
+
+            .chart-container:after {
+                content: '';
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-width: 0 0 13px 13px;
+                border-color: transparent transparent #AAFFAA transparent;
+                right: 0;
+                bottom: 0;
+                position: absolute;
+            }
     </style>
 </head>
 <body>
     <div class="main-container">
 
         <div class="chart-container">
-            <canvas id="maxChart" width="600" height="400">
+            <canvas id="maxChart" width="400" height="300">
                 <p>Error occured while loading chart sources!</p>
             </canvas>
         </div>
-    
+
         <div class="chart-container">
-            <canvas id="minChart" width="600" height="400">
+            <canvas id="minChart" width="400" height="300">
                 <p>Error occured while loading chart sources!</p>
             </canvas>
         </div>
@@ -39,6 +55,6 @@
 
     <script src="Chart.bundle.js"></script>
     <script src="data.js"></script>
-    <script src="gui.js" ></script>
+    <script src="gui.js"></script>
 </body>
 </html>
