@@ -45,22 +45,25 @@ namespace WeatherService
         }
         private static async Task MainLoop(ILogger logger, IConfigurationRoot config)
         {
-
             var section = config
                 .GetSection(new StackTrace()
                 .GetFrame(3)
                 .GetMethod()
                 .Name);
 
-            double Delay = double
-                .TryParse(section
-                .GetSection(nameof(Delay))
-                .Value, out Delay) ? Delay : 5;
+            double Delay;
+            if (!double.TryParse(section.GetSection(nameof(Delay)).Value, out Delay))
+            {
+                Delay = 5;
+                logger.Log(LogLevel.Warn, $"Couldn't parse the '{nameof(Delay)}' value from configuration! Using the default value: {Delay}");
+            }
 
-            uint MaxTries = uint
-                .TryParse(section
-                .GetSection(nameof(MaxTries))
-                .Value, out MaxTries) ? MaxTries : 3;
+            uint MaxTries;
+            if (!uint.TryParse(section.GetSection(nameof(MaxTries)).Value, out MaxTries))
+            {
+                MaxTries = 3;
+                logger.Log(LogLevel.Warn, $"Couldn't parse the '{nameof(MaxTries)}' value from configuration! Using the default value: {MaxTries}");
+            }
 
             uint counter = 0;
             bool success;
@@ -80,7 +83,7 @@ namespace WeatherService
                         {
                             ww = Console.WindowWidth;
                             Console.Write('█');
-                            await Task.Delay((int)Math.Round(Delay*1000/ww));
+                            await Task.Delay((int)Math.Round(Delay * 1000 / ww));
                         }
                     }
                     Console.WriteLine();
@@ -93,8 +96,8 @@ namespace WeatherService
             var result = false;
 
             var jsonHelper = new JsonHelper();
-            IAsyncIO fileService = mock ? new MockAsyncIO() : new FileService(config, s_token);
-            IAsyncService webService = mock ? new MockAsyncIO() : new WebService(config, s_token);
+            IAsyncIO fileService = mock ? new MockAsyncIO() : new FileService(config, logger, s_token);
+            IAsyncService webService = mock ? new MockAsyncIO() : new WebService(config, logger, s_token);
 
             logger.Log(LogLevel.Debug, "Initializing subtasks...");
             logger.Log(LogLevel.Debug, "Fetching data...");
