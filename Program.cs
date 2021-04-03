@@ -180,6 +180,11 @@ namespace WeatherService
                     }
 
                     Region newLocalInstance = task.Result.Result;
+                    if (newLocalInstance is NullRegion)
+                        throw new OperationCanceledException("Merge task returned a NullRegion instance.", s_token)
+                        {
+                            Source = $"{newLocalInstance}::{nameof(newLocalInstance)}",
+                        };
                     return jsonHelper.ToJsonAsync(newLocalInstance);
                 }, TaskContinuationOptions.OnlyOnRanToCompletion);
 
