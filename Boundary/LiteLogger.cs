@@ -80,10 +80,11 @@ namespace WeatherService.Boundary
         {
             var now = DateTime.Now;
             var fm = FileMode.Create;
-            Directory.CreateDirectory("./Logs");
-            var path = $"./Logs/{now:yyyy-MM-dd}.log";
-            if (File.Exists(path)) fm = FileMode.Append;
-            var fs = new FileStream(path, fm);
+            var logsBasePath = $"{AppDomain.CurrentDomain.BaseDirectory}Logs";
+            Directory.CreateDirectory(logsBasePath);
+            var logFilePath = $"{logsBasePath}/{now:yyyy-MM-dd}.log";
+            if (File.Exists(logFilePath)) fm = FileMode.Append;
+            var fs = new FileStream(logFilePath, fm);
             _outStream.Position = 0;
             _outStream.CopyTo(fs);
             fs.Flush(true);

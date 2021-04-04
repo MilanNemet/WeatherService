@@ -16,14 +16,16 @@ namespace WeatherService.Boundary
         private readonly string ResultPath;
         private readonly ILogger _logger;
 
+        private string BasePath { get; } = System.AppDomain.CurrentDomain.BaseDirectory;
         private static CancellationToken? s_token { get; set; } = null;
         private static CancellationToken Token => s_token ?? default;
-        public FileService(IConfigurationRoot configuration, ILogger logger,CancellationToken token)
+
+        public FileService(IConfigurationRoot configuration, ILogger logger, CancellationToken token)
         {
             var section = configuration.GetSection(GetType().Name);
-            ForecastPath = section.GetSection(nameof(ForecastPath)).Value;
-            ResultPath = section.GetSection(nameof(ResultPath)).Value;
-            TodaysPath = section.GetSection(nameof(TodaysPath)).Value;
+            ForecastPath = BasePath + section.GetSection(nameof(ForecastPath)).Value;
+            ResultPath = BasePath + section.GetSection(nameof(ResultPath)).Value;
+            TodaysPath = BasePath + section.GetSection(nameof(TodaysPath)).Value;
             if (s_token == null) s_token = token;
             _logger = logger;
         }
