@@ -289,6 +289,7 @@ namespace WeatherService
                 });
 
                 result = true;
+                Environment.SetEnvironmentVariable("WSRUN","true");
                 logger.Log(LogLevel.Success, "All task completed!");
             }
             catch (AggregateException ae)
@@ -302,6 +303,7 @@ namespace WeatherService
             }
             catch (Exception ex)
             {
+                Environment.SetEnvironmentVariable("WSRUN", "false");
                 logger.Log(LogLevel.Fatal, ex.ToString());
             }
             return result;
