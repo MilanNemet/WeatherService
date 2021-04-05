@@ -19,7 +19,7 @@ namespace WeatherService
         static readonly object s_lockSource = new object();
         static readonly CancellationTokenSource s_tokenSource = new CancellationTokenSource();
         static readonly CancellationToken s_token = s_tokenSource.Token;
-        public static async Task Main()
+        public static async Task Main(string[] args)
         {
             var sw = new Stopwatch();
             sw.Start();
@@ -28,7 +28,7 @@ namespace WeatherService
                 .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                 .AddJsonFile("appsettings.json").Build();
 
-            var logger = new LiteLogger(new MemoryStream(), config);
+            using var logger = new LiteLogger(new MemoryStream(), config);
 
             logger.Log(LogLevel.Debug, "Entering main loop...");
             await MainLoop(logger, config);
@@ -39,9 +39,13 @@ namespace WeatherService
             if (overall <= 1)
                 logger.Log(LogLevel.Warn, "This application is too fast :)");
 
-            Console.WriteLine("\nPress any key to continue...");
-            Console.ReadKey();
-            logger.Dispose();
+            if (args.Length > 0 && args[0] == "-u")
+            {
+                Console.WriteLine("\nPress any key to continue...");
+                Console.ReadKey();
+            }
+            
+            //logger.Dispose();
         }
         private static async Task MainLoop(ILogger logger, IConfigurationRoot config)
         {
@@ -289,7 +293,7 @@ namespace WeatherService
                 });
 
                 result = true;
-                Environment.SetEnvironmentVariable("WSRUN","true");
+                Environment.SetEnvironmentVariable("WSRUN", "true");
                 logger.Log(LogLevel.Success, "All task completed!");
             }
             catch (AggregateException ae)
