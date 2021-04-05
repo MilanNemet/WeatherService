@@ -44,8 +44,6 @@ namespace WeatherService
                 Console.WriteLine("\nPress any key to continue...");
                 Console.ReadKey();
             }
-            
-            //logger.Dispose();
         }
         private static async Task MainLoop(ILogger logger, IConfigurationRoot config)
         {
