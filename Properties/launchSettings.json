@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "WeatherService": {
+      "commandName": "Project",
+      "commandLineArgs": "-u"
+    }
+  }
+}
