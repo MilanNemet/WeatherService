@@ -366,3 +366,4 @@ FodyWeavers.xsd
 # custom files to ignore
 appsettings.json
 /appsettings.json
+Chart.bundle.js
