@@ -16,8 +16,8 @@ namespace WeatherService
     public class Program
     {
         static readonly bool mock = false;
-        static readonly object s_lockSource = new object();
-        static readonly CancellationTokenSource s_tokenSource = new CancellationTokenSource();
+        static readonly object s_lockSource = new();
+        static readonly CancellationTokenSource s_tokenSource = new();
         static readonly CancellationToken s_token = s_tokenSource.Token;
         public static async Task Main(string[] args)
         {
