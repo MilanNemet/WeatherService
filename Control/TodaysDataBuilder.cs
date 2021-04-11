@@ -15,7 +15,7 @@ namespace WeatherService.Control
         private const double yesterday = 1;
         private readonly Region _remote;
         private readonly Forecast[] _todaysWeathers;
-        private List<Forecast> result { get; set; }
+        private List<Forecast> Result { get; set; }
 
         public TodaysDataBuilder(Region remote, Forecast[] todaysWeathers)
         {
@@ -25,24 +25,24 @@ namespace WeatherService.Control
 
         public Forecast[] Build()
         {
-            result = _todaysWeathers.ToList();
+            Result = _todaysWeathers.ToList();
             ReplaceMissingDaysByNull();
             AppendTodaysWeather();
-            return result.ToArray();
+            return Result.ToArray();
         }
         private void ReplaceMissingDaysByNull()
         {
             if
             (
-                result.Count > 0 &&
-                result.Last().date.Date < DateTime.Now.Subtract(TimeSpan.FromDays(yesterday)).Date
+                Result.Count > 0 &&
+                Result.Last().date.Date < DateTime.Now.Subtract(TimeSpan.FromDays(yesterday)).Date
             )
             {
-                var diff = DateTime.Now.Date.Subtract(result.Last().date.Date);
+                var diff = DateTime.Now.Date.Subtract(Result.Last().date.Date);
 
                 for (int i = 0; i < diff.Days - yesterday; i++)
                 {
-                    result.Add(null);
+                    Result.Add(null);
                 }
             }
         }
@@ -53,12 +53,12 @@ namespace WeatherService.Control
 
             if
             (
-                result.Count <= 0 || 
-                result.Last() == null || 
-                result.Last().date.Date != DateTime.Now.Date
+                Result.Count <= 0 || 
+                Result.Last() == null || 
+                Result.Last().date.Date != DateTime.Now.Date
             )
             {
-                result.Add(todaysWeather);
+                Result.Add(todaysWeather);
             }
         }
     }
