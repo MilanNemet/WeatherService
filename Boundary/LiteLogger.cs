@@ -65,7 +65,7 @@ namespace WeatherService.Boundary
         {
             var sb = new StringBuilder();
             sb.Append(DateTime.Now);
-            sb.Append("\t");
+            sb.Append('\t');
             sb.Append(level);
             foreach (var item in items) sb.Append($"\t{item}");
             sb.Append(Environment.NewLine);
