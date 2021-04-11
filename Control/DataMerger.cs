@@ -19,7 +19,7 @@ namespace WeatherService.Control
 
         }
 
-        public Region MergeRegions(Region local, Region remote)
+        public static Region MergeRegions(Region local, Region remote)
         {
             if (local.IsNullOrEmpty) return remote;
 

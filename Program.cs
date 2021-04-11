@@ -167,9 +167,7 @@ namespace WeatherService
                     Region localInstance = parseLocalForecastDataTask.Result.Result;
                     Region remoteInstance = filterRemoteRegionsTask.Result.Result;
 
-                    var dm = new DataMerger();
-
-                    return Task.Run(() => dm.MergeRegions(localInstance, remoteInstance));
+                    return Task.Run(() => DataMerger.MergeRegions(localInstance, remoteInstance));
                 }, TaskContinuationOptions.OnlyOnRanToCompletion);
 
             var forecastsSerializationTask = mergeTask
