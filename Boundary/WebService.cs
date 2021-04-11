@@ -17,7 +17,7 @@ namespace WeatherService.Boundary
         private readonly int Timeout;
         private readonly ILogger _logger;
 
-        private static CancellationToken? s_token { get; set; } = null;
+        private static CancellationToken? s_token { get; set; }
         private static CancellationToken Token => s_token ?? default;
         public WebService(IConfigurationRoot configuration, ILogger logger, CancellationToken token)
         {
