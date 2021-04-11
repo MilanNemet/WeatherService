@@ -14,8 +14,8 @@ namespace WeatherService.Boundary
         {
             var rand = new Random().Next(0, 3);
             if (rand == 0) ThrowBehavior = (ThrowOption)rand;
-            if (rand % 2 == 1) ThrowBehavior = ThrowBehavior | ThrowOption.ThrowOnFetch;
-            if(rand >= 2) ThrowBehavior = ThrowBehavior | ThrowOption.ThrowOnPersist;
+            if (rand % 2 == 1) ThrowBehavior |= ThrowOption.ThrowOnFetch;
+            if(rand >= 2) ThrowBehavior |= ThrowOption.ThrowOnPersist;
 
             rand *= 1000;
             rand += new Random().Next(0, 999);
